@@ -69,9 +69,9 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-
 ### 快速创建components和store
-# 全局安装plop后
+
+#### 全局安装plop后
 plop
-# 未全局安装
+#### 未全局安装
 npm run plop
