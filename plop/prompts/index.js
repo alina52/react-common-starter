@@ -19,17 +19,5 @@ module.exports = {
     message: 'please choose a component type to creating',
     choices: ['function', 'class'],
     default: 0,
-  }),
-  // 容器组件
-  containerName: createPrompts({
-    type: 'input',
-    name: 'containerName',
-    message: 'container name please',
-  }),
-  // redux module
-  moduleName: createPrompts({
-    type: 'input',
-    name: 'moduleName',
-    message: 'module name please',
   })
 }
