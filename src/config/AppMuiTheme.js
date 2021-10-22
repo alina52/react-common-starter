@@ -1,9 +1,11 @@
 import { createTheme} from '@material-ui/core/styles';
 
-export default createTheme({
+const theme = createTheme({
   palette: {
     primary: {
-      main: "#ca2420"
+      main: '#ca2420'
     }
   },
 });
+
+export default theme;

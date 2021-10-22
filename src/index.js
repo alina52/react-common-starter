@@ -1,17 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'src/index.css';
-import App from 'pages/common/App';
+import App from 'src/app';
+import appConfig from 'src/config/AppConfig'
 import reportWebVitals from 'src/reportWebVitals';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from 'src/config/AppMuiTheme'
+
+appConfig.initialize(windows.CONFIG)
+delete window.CONFIG
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <App />
     </ThemeProvider>
-
   </React.StrictMode>,
   document.getElementById('root')
 );
