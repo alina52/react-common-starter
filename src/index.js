@@ -6,7 +6,7 @@ import reportWebVitals from 'src/reportWebVitals';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from 'src/config/AppMuiTheme'
 
-appConfig.initialize(windows.CONFIG)
+appConfig.initialize(window.CONFIG)
 delete window.CONFIG
 
 ReactDOM.render(
@@ -15,7 +15,7 @@ ReactDOM.render(
       <App />
     </ThemeProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('app')
 );
 
 // If you want to start measuring performance in your app, pass a function
