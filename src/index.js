@@ -1,3 +1,11 @@
+/*
+ * @Author: Chenyu Wang
+ * @LastEditors: Chenyu Wang
+ * @email: chenyu.wang96@outlook.com
+ * @github: https://github.com/alina52
+ * @Date: 2021-10-18 14:52:09
+ * @LastEditTime: 2021-10-29 13:07:51
+ */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'src/app';

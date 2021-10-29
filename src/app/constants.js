@@ -1,3 +1,11 @@
+/*
+ * @Author: Chenyu Wang
+ * @LastEditors: Chenyu Wang
+ * @email: chenyu.wang96@outlook.com
+ * @github: https://github.com/alina52
+ * @Date: 2021-10-21 22:22:15
+ * @LastEditTime: 2021-10-29 13:05:58
+ */
 /* Page change event */
 export const PAGE_CHANGE        = 'PAGE_CHANGE'
 

@@ -1,12 +1,15 @@
-import urls from 'src/config/Urls';
-
-/**
+/*
+ * @Author: Chenyu Wang
+ * @LastEditors: Chenyu Wang
+ * @email: chenyu.wang96@outlook.com
+ * @github: https://github.com/alina52
+ * @Date: 2021-10-21 22:57:01
+ * @LastEditTime: 2021-10-29 13:06:39
+ * 
  * Basic application context.
  * It contains information provided from backend server that necessary for initializing the UI.
- *
- * @author Alina Wang
- *
  */
+import urls from 'src/config/Urls';
 
 class AppConfig {
   environment: null;

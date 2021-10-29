@@ -1,3 +1,11 @@
+/*
+ * @Author: Chenyu Wang
+ * @LastEditors: Chenyu Wang
+ * @email: chenyu.wang96@outlook.com
+ * @github: https://github.com/alina52
+ * @Date: 2021-10-22 15:07:19
+ * @LastEditTime: 2021-10-29 13:07:45
+ */
 import CustomSnackbar from 'src/components/MuiSnackbar';
 
 export default class message {

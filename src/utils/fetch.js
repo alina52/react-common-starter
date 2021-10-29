@@ -1,3 +1,11 @@
+/*
+ * @Author: Chenyu Wang
+ * @LastEditors: Chenyu Wang
+ * @email: chenyu.wang96@outlook.com
+ * @github: https://github.com/alina52
+ * @Date: 2021-10-22 11:34:29
+ * @LastEditTime: 2021-10-29 13:07:39
+ */
 import arrayFindIndex from "array-find-index";
 import fetch from "isomorphic-fetch";
 import * as Constants from "src/app/constants";
