@@ -1,22 +1,16 @@
-import { useSnackbar } from 'notistack';
-
-const { enqueueSnackbar } = useSnackbar();
+import CustomSnackbar from 'src/components/MuiSnackbar';
 
 export default class message {
     static info = (msg) => {
-        let options = {variant:'info'};
-        enqueueSnackbar(msg, options);
+        return CustomSnackbar('info', msg);
     }
     static warn = (msg) => {
-        let options = {variant:'warn'};
-        enqueueSnackbar(msg, options);
+        return CustomSnackbar('warn', msg);
     }
     static success = (msg) => {
-        let options = {variant:'success'};
-        enqueueSnackbar(msg, options);
+        return CustomSnackbar('success', msg);
     }
     static error = (msg) => {
-        let options = {variant:'error'};
-        enqueueSnackbar(msg, options);
+        return CustomSnackbar('error', msg);
     }
 }

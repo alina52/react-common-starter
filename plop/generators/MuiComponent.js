@@ -8,7 +8,7 @@ const genMuiComponent = () => ({
   actions: [
     createAction({
       type: 'add',
-      path: `${componentBasePath}/Mui{{componentName}}/Mui{{componentName}}.js`,
+      path: `${componentBasePath}/Mui{{componentName}}/index.js`,
       templateFile: `${templateBasePath}/mui.component.{{componentType}}.js.hbs`,
     }),
     createAction({

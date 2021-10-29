@@ -5,6 +5,7 @@ import appConfig from 'src/config/AppConfig'
 import reportWebVitals from 'src/reportWebVitals';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from 'src/config/AppMuiTheme'
+import { GeneralProvider } from "src/app/context";
 
 appConfig.initialize(window.CONFIG)
 delete window.CONFIG
@@ -12,7 +13,9 @@ delete window.CONFIG
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
+      <GeneralProvider>
       <App />
+      </GeneralProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('app')

@@ -1,5 +1,4 @@
 import * as Constants from "src/app/constants";
-import appConfig from "src/config/AppConfig";
 import { isEmptyCheck } from "src/utils/isEmptyCheck";
 
 /**
@@ -33,8 +32,8 @@ class Urls {
 
     const pageUrls = [
       { key: Constants.PAGE_HOME, value: "/" },
-      { key: Constants.PAGE_LIST, value: "/list" },
-      { key: Constants.PAGE_ITEM, value: "/item/:id" },
+      { key: Constants.PAGE_LIST, value: "list" },
+      { key: Constants.PAGE_ITEM, value: "item/:id" },
     ];
 
     /* Register page urls */

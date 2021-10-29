@@ -1,147 +1,176 @@
-import qs from 'qs';
-import fetch from 'isomorphic-fetch';
-import * as Constants from 'src/app/constants';
-import urls from 'src/config/Urls';
-import { message } from 'src/utils/message';
-import appConfig from 'src/config/AppConfig';
+import arrayFindIndex from "array-find-index";
+import fetch from "isomorphic-fetch";
+import * as Constants from "src/app/constants";
+import urls from "src/config/Urls";
+import appConfig from "src/config/AppConfig";
+import MessageVO from "src/utils/MessageVO";
 
-const BASE_URL = urls.baseResourceUrl;
+export const queryUrl = (url, params) => {
+  let urlWithParams =
+    url +
+    (url.indexOf("?") === -1 ? "?" : "&") +
+    Object.keys(params)
+      .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+      .join("&");
+  return urlWithParams;
+};
 
-/**
- * Handle Url with params
- * @param url
- * @param param
- * @returns {*}
- */
-function handleUrlWithParams(url, param) {
-  let completeUrl = BASE_URL + url;
+const successHandler = (dispatch, options, requestType, successType, json) => {
+  dispatch({
+    type: Constants.FETCH_SUCCESS,
+    options: options,
+    requestType: requestType,
+    messageFetchSuccess: new MessageVO(
+      "SUCCESS",
+      json.status,
+      json.message || null
+    ),
+  });
 
-  if (param) {
-    if (completeUrl.indexOf('?') === -1) {
-      completeUrl = `${completeUrl}?${ObjToURLString(param)}`;
-    } else {
-      completeUrl = `${completeUrl}&${ObjToURLString(param)}`;
+  if (successType) {
+    dispatch({
+      type: successType,
+      options: options,
+      data: json,
+    });
+  }
+};
+
+const errorHandler = (dispatch, options, requestType, errorType, err) => {
+  dispatch({
+    type: Constants.FETCH_ERROR,
+    options: options,
+    requestType: requestType,
+    messageFetchError: new MessageVO(
+      "ERROR",
+      err.status,
+      err.message,
+      err.errorCode,
+      err.body
+    ),
+  });
+
+  if (errorType) {
+    dispatch({
+      type: errorType,
+      options: options,
+      data: err,
+    });
+  }
+};
+
+const customizedfetch = (
+  dispatch,
+  uri,
+  options = {},
+  requestType,
+  successType,
+  errorType
+) => {
+  let url = urls.resourceUrl(uri);
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  options.headers = options.headers || headers;
+
+  if (options.showErrorMessage === undefined) {
+    options.showErrorMessage = true;
+  }
+
+  if (appConfig.mock) {
+    console.log(
+      "Manually set body & queryParams as null as they will impact loading the data from json file."
+    );
+    console.log(options.body);
+    console.log(options.queryParams);
+
+    options.body = null;
+    options.queryParams = null;
+    options.method = "GET";
+  } else {
+    if (options.queryParams) {
+      url = queryUrl(url, options.queryParams);
+    }
+    if (
+      arrayFindIndex(["POST", "PUT", "DELETE"], (m) => m === options.method)
+    ) {
+      options.headers = headers;
     }
   }
-  return completeUrl;
-}
 
-/**
- * Handle Url
- * @param url
- * @returns {*}
- */
-function handleUrl(url) {
-  let completeUrl = BASE_URL + url;
-  return completeUrl;
-}
+  dispatch({
+    type: Constants.FETCH_START,
+    options: options,
+    requestType: requestType,
+  });
 
-/**
- * Transfer pramas to String with format as 'test=1&test2=2'
- * @param param
- * @returns {String}
- * @constructor
- */
-function ObjToURLString(param) {
-  let str = '';
-  if (Object.prototype.toString.call(param) === '[object Object]') {
-    const list = Object.entries(param).map((item) => {
-      return `${item[0]}=${item[1]}`;
+  dispatch({
+    type: requestType,
+    options: options,
+  });
+
+  return fetch(url, options)
+    .then((response) => {
+      const status = response.status;
+      return response.text().then((text) => {
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (err) {
+          let throwErr = new Error();
+          throwErr.status = status;
+          throwErr.errorCode = json.errorCode;
+          throwErr.message = err.message;
+          throwErr.body = text;
+          throw throwErr;
+        }
+        if (!response.ok) {
+          let notOkErr = new Error();
+          notOkErr.status = status;
+          notOkErr.errorCode = json.errorCode;
+          notOkErr.message = json.message || json.error || "No details";
+          notOkErr.body = text;
+          throw notOkErr;
+        }
+
+        json.status = status;
+
+        if (appConfig.mock) {
+          setTimeout(
+            () =>
+              successHandler(dispatch, options, requestType, successType, json),
+            2000
+          );
+        } else {
+          successHandler(dispatch, options, requestType, successType, json);
+        }
+
+        if (options.onSuccessCallback) {
+          options.onSuccessCallback(json);
+        }
+      });
+    })
+    .catch((caughtError) => {
+      if (appConfig.mock) {
+        setTimeout(
+          () =>
+            errorHandler(
+              dispatch,
+              options,
+              requestType,
+              errorType,
+              caughtError
+            ),
+          2000
+        );
+      } else {
+        errorHandler(dispatch, options, requestType, errorType, caughtError);
+      }
+
+      if (options.onErrorCallback) {
+        options.onErrorCallback(caughtError);
+      }
     });
-    str = list.join('&');
-  }
-  return str;
-}
+};
 
-//Get
-export async function get(url, param) {
-  const completeUrl = handleUrlWithParams(url, param);
-  const response = await fetch(completeUrl, {
-    xhrFields: {
-      withCredentials: true, //Cross-Region
-    },
-  });
-  const result = await response.json();
-  if (!response.ok) {
-    message.error(result.message || 'Internel Error.');
-  }
-
-  return result;
-}
-
-//Post
-export async function post(url, param) {
-  const completeUrl = handleUrl(url);
-  const response = await fetch(completeUrl, {
-    method: 'POST',
-    xhrFields: {
-      withCredentials: true,
-    },
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify(param),
-  });
-  const result = await response.json();
-  if (!response.ok) {
-    message.error(result.message || 'Internel Error');
-  }
-  message.success(result.message || 'Success !');
-  return result;
-}
-
-//Patch
-export async function patch(url, param) {
-  const completeUrl = handleUrl(url);
-  const response = await fetch(completeUrl, {
-    method: 'PATCH',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify(param),
-  });
-  const result = await response.json();
-  if (!response.ok) {
-    message.error(result.message || 'Internel Error');
-  }
-  message.success(result.message || 'Success !');
-  return result;
-}
-
-//Put
-export async function put(url, param) {
-  const completeUrl = handleUrl(url);
-  const response = await fetch(completeUrl, {
-    method: 'PUT',
-    xhrFields: {
-      withCredentials: true,
-    },
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify(param),
-  });
-  const result = await response.json();
-  if (!response.ok) {
-    message.error(result.message || 'Internel Error');
-  }
-  message.success(result.message || 'Success !');
-  return result;
-}
-
-//Delete
-export async function del(url, param) {
-  const completeUrl = handleUrlWithParams(url, param);
-  const response = await fetch(completeUrl, {
-    method: 'delete',
-    xhrFields: {
-      withCredentials: true,
-    },
-  });
-  const result = await response.json();
-  if (!response.ok) {
-    message.error(result.message || 'Internel Error');
-  }
-  message.success(result.message || 'Success !');
-  return result;
-}
+export default customizedfetch;

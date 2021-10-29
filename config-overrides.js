@@ -9,6 +9,7 @@ module.exports = override(
     pages: path.resolve(__dirname, './src/pages'),
     public: path.resolve(__dirname, './public'),
     plop: path.resolve(__dirname, './plop'),
+    test: path.resolve(__dirname, './public/test'),
   }),
   removeModuleScopePlugin()
 );
